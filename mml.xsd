@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"> <!--elementFormDefault="qualified" attributeFormDefault="unqualified"-->
+
+
+
+  <xs:element name="Movies">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Year"  type="tYear" maxOccurs="1"/>
+        <xs:element name="Movie" type="tMovie" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+    <xs:simpleType name="tYear">
+        <xs:restriction base="xs:decimal">
+            <xs:minInclusive value="1900"/>
+            <xs:maxInclusive value="2021"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="tMovie" mixed="true">     <!--mixed true para que pueda tener childres -->
+        <xs:sequence>
+            <xs:element name="Title" type="xs:string" />
+            <xs:element name="Duration" type="tDuration" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Genre" type="tGenre" maxOccurs="3"/>          <!-- 3 porque solo hay 3 generos-->
+            <xs:element name="Cast" type="tCast" maxOccurs="unbounded"/>    <!--unbounded=numero ilimitado de veces-->
+        </xs:sequence>
+        <xs:attribute name="langs" use="optional" type="tLanguages" />
+    </xs:complexType>
+  
+    <xs:simpleType name="tDuration">
+        <xs:restriction base="xs:integer">
+            <xs:maxInclusive value="300" />
+            <xs:minInclusive value="60" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="tGenre">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Comedy"/>
+            <xs:enumeration value="Drama"/>
+            <xs:enumeration value="Action"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="tCast">
+        <xs:sequence>
+            <xs:element name="Name" type="xs:string"/>
+            <xs:element name="Role" type="tRole"/>
+            <xs:group ref="tContact" />
+            <!--<xs:element name="MML" type="tMML" minOccurs="0"/-->
+            <xs:element type="xs:string" name="MML" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="id" use="required" type="tId" />
+    </xs:complexType>
+
+    <xs:group name="tContact">
+        <xs:choice>
+            <xs:element name="Email" type="tEmail"/>
+            <xs:element name="Phone" type="tPhone"/>
+        </xs:choice>
+    </xs:group>
+
+    <xs:simpleType name="tPhone">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="[0-9]{9}"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="tEmail">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="[0-9a-zA-Z]{1,}[@]{1}[0-9a-zA-Z]{1,}[\.]{1}[0-9a-zA-Z]{1,}"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="tId">
+        <xs:restriction base="xs:string">
+        <xs:pattern value="[A-Za-z]{3}[0-9]{3}"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="tRole">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Main"/>
+            <xs:enumeration value="Supporting"/>
+            <xs:enumeration value="Extra"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="tLanguages">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="[a-zA-Z]{2}([ ][a-zA-Z][a-zA-Z]){0,}"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema> 
+
+<!--
+    Schema: http://elvex.ugr.es/decsai/csharp/xml/xml-schema.xml
+    pattern: http://pello.io/coding,/xml,/xmlschema,/xsd/2013/07/13/xml-schema-elementos-simples-y-tipos-de-datos.html
+    validator: https://www.liquid-technologies.com/online-xsd-validator
+-->
